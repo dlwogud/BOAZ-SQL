@@ -46,3 +46,67 @@ ORDER BY age DESC;  -- 나이 내림차순
 SELECT name, city, age
 FROM customers
 ORDER BY city ASC, age DESC;
+
+-- JOIN (테이블 결합)
+-- 두 테이블을 공통 컬럼으로 연결해서 하나로 합침
+
+-- INNER JOIN (교집합)
+SELECT 
+  c.customer_id,
+  c.name,
+  o.order_id,
+  o.amount
+FROM customers c
+INNER JOIN orders o
+  ON c.customer_id = o.customer_id;
+
+-- 두 테이블 모두 존재하는 데이터만 출력
+
+
+-- LEFT JOIN (왼쪽 테이블 기준)
+SELECT 
+  c.customer_id,
+  c.name,
+  o.order_id,
+  o.amount
+FROM customers c
+LEFT JOIN orders o
+  ON c.customer_id = o.customer_id;
+
+-- customers에는 있지만 orders에는 없는 고객도 표시됨 (NULL로 표시)
+
+
+-- RIGHT JOIN (오른쪽 테이블 기준)
+SELECT 
+  c.customer_id,
+  c.name,
+  o.order_id,
+  o.amount
+FROM customers c
+RIGHT JOIN orders o
+  ON c.customer_id = o.customer_id;
+
+-- orders에는 있지만 customers에는 없는 데이터도 표시
+
+
+-- FULL OUTER JOIN (합집합)
+SELECT 
+  c.customer_id,
+  c.name,
+  o.order_id,
+  o.amount
+FROM customers c
+FULL OUTER JOIN orders o
+  ON c.customer_id = o.customer_id;
+
+-- 양쪽 테이블의 모든 데이터를 표시 (존재하지 않으면 NULL)
+
+
+-- SELF JOIN (자기 자신과 결합)
+-- 예: 사원 테이블에서 상사 이름을 찾기
+SELECT 
+  e.employee_name AS 직원,
+  m.employee_name AS 상사
+FROM employees e
+LEFT JOIN employees m
+  ON e.manager_id = m.employee_id;
