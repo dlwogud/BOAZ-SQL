@@ -13,3 +13,4 @@
 |------|------|------|
 | `01_BASIC` | SQL 기본 문법 복습 | SELECT, JOIN, CASE WHEN |
 | `02_INTERMEDIATE` | 실무형 SQL 구조 이해 | 서브쿼리, WITH, 윈도우함수 |
+| `03_PROJECT` | 실제 분석 쿼리 예시 | 조직별 달성률, 제품별 성장률 등 |
