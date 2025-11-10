@@ -1,0 +1,71 @@
+-- 일별 지점 매출 랭킹
+-- 날짜별로 각 지점의 매출을 집계하고, 매출 순위 매기기
+
+WITH daily_sales AS (
+    SELECT 
+        sales_date,
+        branch,
+        SUM(net_sales) AS total_sales
+    FROM sales
+    GROUP BY sales_date, branch
+)
+SELECT 
+    sales_date,
+    branch,
+    total_sales,
+    DENSE_RANK() OVER (PARTITION BY sales_date ORDER BY total_sales DESC) AS rank_in_day
+FROM daily_sales
+ORDER BY sales_date, rank_in_day;
+
+-- 조직별 목표 달성률 계산
+-- 실제 매출 / 목표 매출 * 100 (%)
+
+WITH goal_vs_actual AS (
+    SELECT 
+        org,
+        SUM(target_sales) AS target_total,
+        SUM(actual_sales) AS actual_total
+    FROM sales_performance
+    WHERE month = '2024-10'
+    GROUP BY org
+)
+SELECT 
+    org,
+    actual_total,
+    target_total,
+    ROUND(actual_total * 100.0 / target_total, 1) AS achievement_rate,
+    CASE 
+        WHEN actual_total >= target_total THEN '달성'
+        ELSE '미달'
+    END AS status
+FROM goal_vs_actual
+ORDER BY achievement_rate DESC;
+
+-- 제품별 전월 대비 매출 성장률 분석
+-- (이번달 매출 - 지난달 매출) / 지난달 매출 * 100
+
+WITH monthly_sales AS (
+    SELECT 
+        product,
+        TO_CHAR(sales_date, 'YYYY-MM') AS year_month,
+        SUM(net_sales) AS total_sales
+    FROM sales
+    GROUP BY product, TO_CHAR(sales_date, 'YYYY-MM')
+),
+growth AS (
+    SELECT
+        a.product,
+        a.year_month,
+        a.total_sales,
+        b.total_sales AS prev_sales,
+        ROUND(((a.total_sales - b.total_sales) / NULLIF(b.total_sales, 0)) * 100, 2) AS growth_rate
+    FROM monthly_sales a
+    LEFT JOIN monthly_sales b
+        ON a.product = b.product
+       AND TO_DATE(a.year_month || '-01', 'YYYY-MM-DD') = 
+           ADD_MONTHS(TO_DATE(b.year_month || '-01', 'YYYY-MM-DD'), 1)
+)
+SELECT *
+FROM growth
+WHERE year_month = '2024-10'
+ORDER BY growth_rate DESC;
