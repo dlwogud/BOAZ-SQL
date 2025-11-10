@@ -1,0 +1,48 @@
+-- SELECT 기본 문법
+-- 데이터를 조회할 때 사용하는 가장 기본 문법
+SELECT column1, column2
+FROM table_name;
+
+-- 예시: 고객 테이블에서 이름과 나이를 조회
+SELECT name, age
+FROM customers;
+
+
+-- WHERE 조건문
+-- 특정 조건에 맞는 행만 선택
+SELECT name, age
+FROM customers
+WHERE age >= 30;
+
+-- 여러 조건 결합 (AND / OR)
+SELECT name, age, city
+FROM customers
+WHERE city = 'Seoul'
+  AND age >= 25;
+
+
+-- GROUP BY (그룹별 집계)
+-- 동일한 값끼리 묶어서 SUM, AVG, COUNT 등 집계함수 사용
+SELECT city, COUNT(*) AS num_customers
+FROM customers
+GROUP BY city;
+
+
+-- HAVING (그룹 조건)
+-- 그룹화 이후 조건 필터링
+SELECT city, COUNT(*) AS num_customers
+FROM customers
+GROUP BY city
+HAVING COUNT(*) >= 10;
+
+
+-- ORDER BY (정렬)
+-- 결과를 오름차순(ASC) 또는 내림차순(DESC)으로 정렬
+SELECT name, age, city
+FROM customers
+ORDER BY age DESC;  -- 나이 내림차순
+
+-- 여러 기준 정렬도 가능
+SELECT name, city, age
+FROM customers
+ORDER BY city ASC, age DESC;
