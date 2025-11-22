@@ -110,3 +110,71 @@ SELECT
 FROM employees e
 LEFT JOIN employees m
   ON e.manager_id = m.employee_id;
+
+---CASE WHEN (조건에 따라 값 변환)
+
+CASE WHEN은 SQL에서 조건을 분기하여 서로 다른 값을 반환할 때 사용한다.
+프로그램에서의 if-else 기능과 유사하다.
+
+✔ 기본 문법
+CASE
+  WHEN 조건1 THEN 결과1
+  WHEN 조건2 THEN 결과2
+  ELSE 기본값
+END
+
+예시 1: 점수에 따라 등급 분류
+SELECT
+  name,
+  score,
+  CASE 
+    WHEN score >= 90 THEN 'A'
+    WHEN score >= 80 THEN 'B'
+    WHEN score >= 70 THEN 'C'
+    ELSE 'F'
+  END AS grade
+FROM students;
+
+예시 2: NULL을 특정 값으로 치환
+SELECT
+  name,
+  CASE
+    WHEN phone IS NULL THEN '미입력'
+    ELSE phone
+  END AS phone_number
+FROM customers;
+
+예시 3: 가격대 구간 나누기
+SELECT
+  product_name,
+  price,
+  CASE
+    WHEN price >= 50000 THEN '고가'
+    WHEN price >= 20000 THEN '중가'
+    ELSE '저가'
+  END AS price_level
+FROM products;
+
+예시 4: GROUP BY 결과에 CASE 적용
+SELECT
+  city,
+  COUNT(*) AS cnt,
+  CASE
+    WHEN COUNT(*) >= 50 THEN '대도시'
+    WHEN COUNT(*) >= 20 THEN '중간 규모'
+    ELSE '소도시'
+  END AS city_group
+FROM customers
+GROUP BY city;
+
+예시 5: JOIN 결과로 상태 분류
+SELECT
+  c.customer_id,
+  c.name,
+  CASE
+    WHEN o.order_id IS NULL THEN '주문 없음'
+    ELSE '주문 있음'
+  END AS order_status
+FROM customers c
+LEFT JOIN orders o
+  ON c.customer_id = o.customer_id;
